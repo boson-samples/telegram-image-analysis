@@ -7,7 +7,9 @@ import java.net.URISyntaxException;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpClient;
+
 import java.util.HashMap;
+import java.util.List;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -48,7 +50,21 @@ public class Function {
             System.out.println(response.statusCode());
             System.out.println(response.body());
 
-            return new Output("1234", "12", "Happy");
+            // Read the output as JSON
+            ObjectMapper mapper = new ObjectMapper();
+            List<HashMap> faces = mapper.readValue(response.body(), List.class);
+
+            // We get a list of faces back - use the first
+            System.out.println(faces);
+            HashMap face = faces.get(0);
+            System.out.println(face.get("faceAttributes"));
+
+            // We get the age back as a float, let's just convert to a string for now
+            // String age = Float.toString(face.get("faceAttributes").get("age"));
+            String age = "10";
+            
+            // TODO: Extract the emotion from our results
+            return new Output(input.getChat(), age, "Happy");
 
             // For all of these exceptions, it's unclear how to best
             // return from this function to indicate an error code
