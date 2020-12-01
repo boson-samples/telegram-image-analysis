@@ -1,0 +1,11 @@
+# This is a very simple Knative Service that prints the input event to its log.
+
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: camel-event-display
+spec:
+  template:
+    spec:
+      containers:
+        - image: gcr.io/knative-releases/knative.dev/eventing-contrib/cmd/event_display

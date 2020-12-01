@@ -1,0 +1,10 @@
+name: responder
+namespace: ""
+runtime: node
+image: ""
+imageDigest: ""
+trigger: events
+builder: quay.io/boson/faas-nodejs-builder
+builderMap:
+  default: quay.io/boson/faas-nodejs-builder
+envVars: {}

@@ -1,0 +1,10 @@
+name: processor
+namespace: ""
+runtime: node
+image: docker.io/lanceball/processor:latest
+imageDigest: sha256:f13bbe83c08c67e0ec6e320276259ab1c84880f3dc8d4ff0bb02c3cd0c8df947
+trigger: events
+builder: default
+builderMap:
+  default: quay.io/boson/faas-nodejs-builder
+envVars: {}
