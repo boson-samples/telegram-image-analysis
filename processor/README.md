@@ -1,52 +1,86 @@
-# Node.js Cloud Events Function
+# Function project
 
-Welcome to your new Node.js function project! The boilerplate function code can
-be found in [`index.js`](./index.js). This function is meant to respond
-exclusively to [Cloud Events](https://cloudevents.io/), but you can remove the
-check for this in the function and it will respond just fine to plain vanilla
-incoming HTTP requests. Additionally, this example function is written
-asynchronously, returning a `Promise`. If your function does not perform any
-asynchronous execution, you can safely remove the `async` keyword from the
-function, and return raw values intead of a `Promise`.
+Welcome to your new Quarkus function project!
+
+This sample project contains a single function: `functions.Function.function()`,
+the function just returns its argument.
 
 ## Local execution
+Make sure that `Java 11 SDK` is installed.
 
-After executing `npm install`, you can run this function locally by executing
-`npm run local`.
+To start server locally run `./mvnw quarkus:dev`.
+The command starts http server and automatically watches for changes of source code.
+If source code changes the change will be propagated to running server. It also opens debugging port `5005`
+so debugger can be attached if needed.
 
-The runtime will expose three endpoints.
+To run test locally run `./mvnw test`.
 
-  * `/` The endpoint for your function.
-  * `/health/readiness` The endpoint for a readiness health check
-  * `/health/liveness` The endpoint for a liveness health check
+## The `func` CLI
 
-The health checks can be accessed in your browser at
-[http://localhost:8080/health/readiness]() and
-[http://localhost:8080/health/liveness](). You can use `curl` to `POST` an event
-to the function endpoint:
-
-```console
-curl -X POST -d '{"name": "Tiger", "customerId": "0123456789"}' \
-  -H'Content-type: application/json' \
-  -H'Ce-id: 1' \
-  -H'Ce-source: cloud-event-example' \
-  -H'Ce-type: dev.knative.example' \
-  -H'Ce-specversion: 1.0' \
-  http://localhost:8080
+It's recommended to set `FUNC_REGISTRY` environment variable.
+```shell script
+# replace ~/.bashrc by your shell rc file
+# replace docker.io/johndoe with your registry
+export FUNC_REGISTRY=docker.io/johndoe
+echo "export FUNC_REGISTRY=docker.io/johndoe" >> ~/.bashrc 
 ```
 
-The readiness and liveness endpoints use
-[overload-protection](https://www.npmjs.com/package/overload-protection) and
-will respond with `HTTP 503 Service Unavailable` with a `Client-Retry` header if
-your function is determined to be overloaded, based on the memory usage and
-event loop delay.
+### Building
 
-## Testing
+This command builds OCI image for the function.
 
-This function project includes a [unit test](./test/unit.js) and an
-[integration test](./test/integration.js). All `.js` files in the test directory
-are run.
+```shell script
+func build                  # build jar
+func build --builder native # build native binary
+```
 
-```console
-npm test
+### Running
+
+This command runs the function locally in a container
+using the image created above.
+```shell script
+func run
+```
+
+### Deploying
+
+This commands will build and deploy the function into cluster.
+
+```shell script
+func deploy # also triggers build
+```
+
+## Function invocation
+
+Do not forget to set `URL` variable to the route of your function.
+
+You get the route by following command.
+```shell script
+func describe
+```
+
+### cURL
+
+```shell script
+URL=http://localhost:8080/
+curl -v ${URL} \
+  -H "Content-Type:application/json" \
+  -H "Ce-Id:1" \
+  -H "Ce-Source:cloud-event-example" \
+  -H "Ce-Type:dev.knative.example" \
+  -H "Ce-Specversion:1.0" \
+  -d "{\"message\": \"$(whoami)\"}\""
+```
+
+### HTTPie
+
+```shell script
+URL=http://localhost:8080/
+http -v ${URL} \
+  Content-Type:application/json \
+  Ce-Id:1 \
+  Ce-Source:cloud-event-example \
+  Ce-Type:dev.knative.example \
+  Ce-Specversion:1.0 \
+  message=$(whoami)
 ```

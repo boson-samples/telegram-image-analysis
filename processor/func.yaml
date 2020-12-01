@@ -1,10 +1,12 @@
 name: processor
 namespace: ""
-runtime: node
+runtime: quarkus
 image: ""
 imageDigest: ""
 trigger: events
-builder: default
+builder: quay.io/boson/faas-quarkus-jvm-builder
 builderMap:
-  default: quay.io/boson/faas-nodejs-builder
+  default: quay.io/boson/faas-quarkus-jvm-builder
+  jvm: quay.io/boson/faas-quarkus-jvm-builder
+  native: quay.io/boson/faas-quarkus-native-builder
 envVars: {}
