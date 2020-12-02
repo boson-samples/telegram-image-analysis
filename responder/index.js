@@ -22,13 +22,32 @@ async function sendReply(context, response) {
     
     // send chat response async
     axios.post(url, {
-      chat_id: response.chat,
-      text: `Hi! Thanks for playing. ;) This person looks to be about ${response.age} and ${response.emotion}`
+      chat_id: response[0].chat,
+      text: formatResponse(response)
     })
-    .then(_ => console.log('Done'))
-    .catch(err => console.error(err));
-  })
+    .then(_ => context.log.info('Done'))
+    .catch(err => context.log.error(err));
+  });
 
 };
+
+function formatResponse(response) {
+  let faces = response.length === 1 ? 'face' : 'faces';
+  let text = `Hi! Thanks for playing. :)
+I found ${response.length} ${faces} in this image.
+`;
+
+  response.forEach(image => {
+    text += `
+
+* Age: ${image.age}`;
+
+    for(const emotion in image.emotion) {
+      text += `
+  - ${emotion}: ${image.emotion[emotion]}`;
+    }
+  });
+  return text;
+}
 
 module.exports = sendReply;
