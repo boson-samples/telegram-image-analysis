@@ -71,7 +71,7 @@ public class Function {
                     }
                 }, throwable -> {
                     if (throwable instanceof UnknownHostException || throwable instanceof ConnectException) {
-                        vertx.setTimer(100, dummy -> getData(input, cloudEvent, emitter, retries-1));
+                        vertx.setTimer(500, dummy -> getData(input, cloudEvent, emitter, retries-1));
                     } else {
                         emitter.fail(throwable);
                     }
