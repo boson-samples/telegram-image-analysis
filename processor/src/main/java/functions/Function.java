@@ -1,80 +1,87 @@
 package functions;
 
-import java.io.IOException;
-
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpClient;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 import io.quarkus.funqy.Context;
 import io.quarkus.funqy.Funq;
 import io.quarkus.funqy.knative.events.CloudEvent;
 
+import io.quarkus.runtime.annotations.RegisterForReflection;
+import io.smallrye.mutiny.Uni;
+import io.vertx.ext.web.client.WebClientOptions;
+import io.vertx.mutiny.core.Vertx;
+import io.vertx.mutiny.ext.web.client.WebClient;
+
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+
 public class Function {
     private static final String API_KEY = "dcc086604d47489e86bd6d216aa5b09b";
-    private static String endpoint = "https://boson.cognitiveservices.azure.com/face/v1.0/detect?returnFaceId=false&returnFaceLandmarks=false&returnFaceAttributes=age,emotion&recognitionModel=recognition_03&returnRecognitionModel=false&detectModel=detection_01";   
 
-    @Funq
-    public Output function(Input input, @Context CloudEvent cloudEvent) {
-        try {
-            // The image URL we will analyze - to be sent as the HTTP request body
-            String requestBody = new ObjectMapper().writeValueAsString(
-                new HashMap<String, String>() {{
-                    put("url", input.getUrl());
-                }});
+    @Inject
+    Vertx vertx;
 
-            System.out.println("Evaluating " + input.getUrl());
+    private WebClient client;
 
-            // Build an HTTP request to the Faces API service
-            HttpRequest request = HttpRequest.newBuilder()
-                .header("Ocp-Apim-Subscription-Key", Function.API_KEY)
-                .uri(new URI(endpoint))
-                .POST(HttpRequest.BodyPublishers.ofString(requestBody))
-                .build();
-
-            System.out.println(request);
-
-            // Create HTTPClient to handle our request
-            HttpClient client = HttpClient.newHttpClient();
-
-            // Send request to Faces API
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            System.out.println(response.statusCode());
-            System.out.println(response.body());
-
-            // Read the output as JSON
-            ObjectMapper mapper = new ObjectMapper();
-            List<Face> faces = mapper.readValue(response.body(), new TypeReference<List<Face>>(){});
-
-            // We get a list of faces - use the first
-            Face face = faces.get(0);
-
-            float age = face.getFaceAttributes().getAge();
-            Emotion emotion  = face.getFaceAttributes().getEmotion();
-            
-            return new Output(input.getChat(), age, emotion);
-
-            // For all of these exceptions, it's unclear how to best
-            // return from this function to indicate an error code
-        } catch(JsonProcessingException e) {
-            System.err.println("Error processing input\n" + e);
-        } catch(URISyntaxException e) {
-            System.err.println("Error processing endpoint\n" + e);
-        } catch(IOException e) {
-            System.err.println("Error communicating with Faces API\n" + e);
-        } catch(Exception e) {
-            System.err.println("Unknown error\n" + e);
-        }
-        return null;
+    @PostConstruct
+    void initialize() {
+        this.client = WebClient.create(vertx,
+                new WebClientOptions()
+                        .setDefaultHost("boson.cognitiveservices.azure.com")
+                        .setDefaultPort(443)
+                        .setSsl(true)
+                        .setTrustAll(true));
     }
 
+    @Funq
+    public Uni<Output[]> function(Input input, @Context CloudEvent cloudEvent) throws Exception {
+        return Uni.createFrom().emitter(emitter -> {
+            client.post("/face/v1.0/detect")
+                    .addQueryParam("returnFaceId", "false")
+                    .addQueryParam("returnFaceLandmarks", "false")
+                    .addQueryParam("returnFaceAttributes", "age,emotion")
+                    .addQueryParam("detectModel", "detection_01")
+                    .addQueryParam("recognitionModel", "recognition_03")
+                    .putHeader("Ocp-Apim-Subscription-Key", API_KEY)
+                    .sendJson(new Request(input.getUrl()))
+                    .subscribe()
+                    .with(bufferHttpResponse -> {
+                        try {
+                            Output[] outs = Arrays.stream(bufferHttpResponse.bodyAsJson(Face[].class))
+                                    .map(face -> new Output(input.getChat(), face.getFaceAttributes().getAge(), face.getFaceAttributes().getEmotion()))
+                                    .toArray(Output[]::new);
+                            emitter.complete(outs);
+                        } catch (Throwable t) {
+                            emitter.fail(t);
+                        }
+                    }, t -> emitter.fail(t));
+
+        });
+    }
+
+    private static class Request {
+        public Request(String url) {
+            this.url = url;
+        }
+
+        private String url;
+
+        public String getUrl() {
+            return url;
+        }
+
+        public void setUrl(String url) {
+            this.url = url;
+        }
+    }
 }
