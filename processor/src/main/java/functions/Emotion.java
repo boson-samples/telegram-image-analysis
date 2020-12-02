@@ -1,5 +1,8 @@
 package functions;
 
+import io.quarkus.runtime.annotations.RegisterForReflection;
+
+@RegisterForReflection
 public class Emotion {
     private float anger;
     private float contempt;

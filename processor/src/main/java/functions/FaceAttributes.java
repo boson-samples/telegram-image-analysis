@@ -1,5 +1,8 @@
 package functions;
 
+import io.quarkus.runtime.annotations.RegisterForReflection;
+
+@RegisterForReflection
 public class FaceAttributes {
     private float age;
     private Emotion emotion;

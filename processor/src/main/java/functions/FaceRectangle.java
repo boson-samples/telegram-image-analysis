@@ -1,5 +1,8 @@
 package functions;
 
+import io.quarkus.runtime.annotations.RegisterForReflection;
+
+@RegisterForReflection
 public class FaceRectangle {
     private int top;
     private int left;

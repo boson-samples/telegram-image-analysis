@@ -69,6 +69,7 @@ public class Function {
         });
     }
 
+    @RegisterForReflection
     private static class Request {
         public Request(String url) {
             this.url = url;
