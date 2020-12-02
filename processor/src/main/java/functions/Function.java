@@ -13,6 +13,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 
 import io.quarkus.funqy.Context;
 import io.quarkus.funqy.Funq;
@@ -52,19 +53,15 @@ public class Function {
 
             // Read the output as JSON
             ObjectMapper mapper = new ObjectMapper();
-            List<HashMap> faces = mapper.readValue(response.body(), List.class);
+            List<Face> faces = mapper.readValue(response.body(), new TypeReference<List<Face>>(){});
 
-            // We get a list of faces back - use the first
-            System.out.println(faces);
-            HashMap face = faces.get(0);
-            System.out.println(face.get("faceAttributes"));
+            // We get a list of faces - use the first
+            Face face = faces.get(0);
 
-            // We get the age back as a float, let's just convert to a string for now
-            // String age = Float.toString(face.get("faceAttributes").get("age"));
-            String age = "10";
+            float age = face.getFaceAttributes().getAge();
+            Emotion emotion  = face.getFaceAttributes().getEmotion();
             
-            // TODO: Extract the emotion from our results
-            return new Output(input.getChat(), age, "Happy");
+            return new Output(input.getChat(), age, emotion);
 
             // For all of these exceptions, it's unclear how to best
             // return from this function to indicate an error code

@@ -2,12 +2,12 @@ package functions;
 
 public class Output {
     private String chat;
-    private String age;
-    private String emotion;
+    private float age;
+    private Emotion emotion;
 
     public Output() {}
 
-    public Output(String chat, String age, String emotion) {
+    public Output(String chat, float age, Emotion emotion) {
         this.chat = chat;
         this.age = age;
         this.emotion = emotion;
@@ -21,19 +21,19 @@ public class Output {
         this.chat = chat;
     }
 
-    public String getAge() {
+    public float getAge() {
         return this.age;
     }
 
-    public void setAge(String age) {
+    public void setAge(float age) {
         this.age = age;
     }
 
-    public String getEmotion() {
+    public Emotion getEmotion() {
         return this.emotion;
     }
 
-    public void setEmotion(String emotion) {
+    public void setEmotion(Emotion emotion) {
         this.emotion = emotion;
     }
 }
