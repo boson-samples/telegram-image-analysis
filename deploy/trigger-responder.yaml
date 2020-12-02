@@ -1,0 +1,16 @@
+---
+apiVersion: eventing.knative.dev/v1
+kind: Trigger
+metadata:
+  name: trigger-responder
+spec:
+  broker: default
+  filter:
+    attributes:
+      type: function.outuput
+  subscriber:
+    ref:
+     apiVersion: serving.knative.dev/v1
+     kind: Service
+     name: responder
+

@@ -1,0 +1,16 @@
+---
+apiVersion: eventing.knative.dev/v1
+kind: Trigger
+metadata:
+  name: trigger-receiver
+spec:
+  broker: default
+  filter:
+    attributes:
+      type: telegram.message 
+  subscriber:
+    ref:
+     apiVersion: serving.knative.dev/v1
+     kind: Service
+     name: receiver
+

@@ -1,8 +1,8 @@
 name: receiver
 namespace: ""
 runtime: go
-image: docker.io/zroubalik/receiver:latest
-imageDigest: sha256:7c2bc9d658270b7e7de5487de23a27f08f6d45f8635906554268eea2ab66a1b7
+image: ""
+imageDigest: ""
 trigger: events
 builder: default
 builderMap:

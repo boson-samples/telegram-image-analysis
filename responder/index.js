@@ -2,7 +2,7 @@
 const { CloudEvent, HTTP } = require('cloudevents');
 const axios = require('axios');
 
-const token = process.env.API_TOKEN || "1332135856:AAHI8MlVWVlsZAIVsHGxeogWMSXEK0ETUpc";
+const token = process.env.API_TOKEN || "1407047081:AAHmJBglqwF8NsltEn3PKddEeiPT-v74kIM";
 const url = `https://api.telegram.org/bot${token}/sendMessage`;
 
 // Should receive a cloud event with a Telegram chat ID

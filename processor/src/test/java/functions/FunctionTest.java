@@ -12,11 +12,11 @@ import static org.hamcrest.Matchers.notNullValue;
 @QuarkusTest
 public class FunctionTest {
 
-    @Test
-    void testFunction() {
-        Output output = (new Function()).function(new Input("Hello!"), null);
-        Assertions.assertEquals("Hello!", output.getMessage());
-    }
+    // @Test
+    // void testFunction() {
+    //     Output output = (new Function()).function(new Input("Hello!"), null);
+    //     Assertions.assertEquals("Hello!", output.getMessage());
+    // }
 
     @Test
     public void testFunctionIntegration() {

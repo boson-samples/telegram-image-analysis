@@ -2,14 +2,35 @@ package function
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
+	"net/http"
 	"os"
+	"strings"
 
 	cloudevents "github.com/cloudevents/sdk-go/v2"
 )
 
+const (
+	token                = "1407047081:AAHmJBglqwF8NsltEn3PKddEeiPT-v74kIM"
+	getFileInfoUrl       = "https://api.telegram.org/bot" + token + "/getFile"
+	donwloadPhotoBaseUrl = "https://api.telegram.org/file/bot" + token + "/"
+)
+
 type Message struct {
-	Photos []interface{} `json:"photo"`
+	Chat   map[string]interface{}   `json:"chat"`
+	Photos []map[string]interface{} `json:"photo"`
+}
+
+type Response struct {
+	Chat string `json:"chat"`
+	Url  string `json:"url"`
+}
+
+type GetUrlResult struct {
+	OK     string                 `json:"ok"`
+	Result map[string]interface{} `json:"result"`
 }
 
 // Handle a CloudEvent.
@@ -19,12 +40,10 @@ func Handle(ctx context.Context, event cloudevents.Event) (resp *cloudevents.Eve
 		return
 	}
 
-	fmt.Printf("%v\n", event)
-
 	msg := &Message{}
 	event.DataAs(msg)
 	if err = event.DataAs(msg); err != nil {
-		fmt.Printf("failed to parse Telegram message %s\n", err.Error())
+		fmt.Fprintf(os.Stderr, "failed to parse Telegram message %s\n", err)
 		return
 	}
 
@@ -35,12 +54,37 @@ func Handle(ctx context.Context, event cloudevents.Event) (resp *cloudevents.Eve
 	}
 
 	fmt.Println("received Telegram message with a photo.")
+
+	// Get chat ID from Telegram message
+	var chatId string
+	if id, found := msg.Chat["id"]; found {
+		chatId = id.(string)
+	} else {
+		fmt.Fprintf(os.Stderr, "failed to get chat_id from Telegram message\n")
+		return
+	}
+
+	// Get ID of the last photo from Telegram message
+	var fileId string
+	if id, found := msg.Photos[len(msg.Photos)-1]["file_id"]; found {
+		fileId = id.(string)
+	} else {
+		fmt.Fprintf(os.Stderr, "failed to get file_id from the last photo from Telegram message\n")
+		return
+	}
+
+	var photoPath string
+	photoPath, err = getPhotoURL(fileId)
+
 	// send a CloudEvent with photos
 	response := cloudevents.NewEvent()
 	response.SetID(event.ID())
 	response.SetSource("function:receiver")
 	response.SetType("image:received")
-	response.DataEncoded = event.Data()
+	response.SetData(cloudevents.ApplicationJSON, Response{
+		Chat: chatId,
+		Url:  donwloadPhotoBaseUrl + photoPath,
+	})
 
 	resp = &response
 
@@ -49,4 +93,27 @@ func Handle(ctx context.Context, event cloudevents.Event) (resp *cloudevents.Eve
 	}
 
 	return
+}
+
+func getPhotoURL(fileId string) (string, error) {
+
+	res, err := http.Post(
+		getFileInfoUrl,
+		"application/json; charset=UTF-8",
+		strings.NewReader(fmt.Sprintf("{\"file_id\":\"%s\"}", fileId)),
+	)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "unable to get a photo URL. %v", err)
+		return "", err
+	}
+	if res.Body != nil {
+		defer res.Body.Close()
+	}
+
+	data, _ := ioutil.ReadAll(res.Body)
+	result := GetUrlResult{}
+	json.Unmarshal(data, &result)
+	filepath := result.Result["file_path"].(string)
+
+	return filepath, nil
 }
