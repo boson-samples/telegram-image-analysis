@@ -7,7 +7,7 @@ spec:
   broker: default
   filter:
     attributes:
-      type: function.outuput
+      type: function.output
   subscriber:
     ref:
      apiVersion: serving.knative.dev/v1
