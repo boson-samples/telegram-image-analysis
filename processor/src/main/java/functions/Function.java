@@ -30,7 +30,7 @@ public class Function {
     public Uni<Output[]> function(Input input, @Context CloudEvent cloudEvent) throws Throwable {
         return Uni.createFrom().emitter(emitter -> {
 
-            FaceAPI faceAPI = FaceAPIManager.authenticate("https://boson.cognitiveservices.azure.com/face/v1.0", "dcc086604d47489e86bd6d216aa5b09b");
+            FaceAPI faceAPI = FaceAPIManager.authenticate("https://boson.cognitiveservices.azure.com/face/v1.0", API_KEY);
             faceAPI
                     .withAzureRegion(AzureRegions.EASTUS) // not really used but has to be set anyway :(
                     .faces()
