@@ -1,13 +1,15 @@
 package functions;
 
+import com.microsoft.azure.cognitiveservices.vision.faceapi.models.Emotion;
+
 public class Output {
     private String chat;
-    private String age;
-    private String emotion;
+    private Double age;
+    private Emotion emotion;
 
     public Output() {}
 
-    public Output(String chat, String age, String emotion) {
+    public Output(String chat, Double age, Emotion emotion) {
         this.chat = chat;
         this.age = age;
         this.emotion = emotion;
@@ -21,19 +23,19 @@ public class Output {
         this.chat = chat;
     }
 
-    public String getAge() {
+    public Double getAge() {
         return this.age;
     }
 
-    public void setAge(String age) {
+    public void setAge(Double age) {
         this.age = age;
     }
 
-    public String getEmotion() {
+    public Emotion getEmotion() {
         return this.emotion;
     }
 
-    public void setEmotion(String emotion) {
+    public void setEmotion(Emotion emotion) {
         this.emotion = emotion;
     }
 }
