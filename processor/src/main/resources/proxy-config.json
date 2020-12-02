@@ -1,0 +1,6 @@
+[
+	["com.microsoft.azure.cognitiveservices.vision.faceapi.implementation.FacesImpl$FacesService"],
+	["com.microsoft.azure.cognitiveservices.vision.faceapi.implementation.FaceListsImpl$FaceListsService"],
+	["com.microsoft.azure.cognitiveservices.vision.faceapi.implementation.PersonGroupsImpl$PersonGroupsService"],
+	["com.microsoft.azure.cognitiveservices.vision.faceapi.implementation.PersonGroupPersonsImpl$PersonGroupPersonsService"]
+]
