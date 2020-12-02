@@ -1,10 +1,10 @@
-name: processor
+name: receiver
 namespace: ""
-runtime: node
-image: docker.io/lanceball/processor:latest
-imageDigest: sha256:f13bbe83c08c67e0ec6e320276259ab1c84880f3dc8d4ff0bb02c3cd0c8df947
+runtime: go
+image: docker.io/zroubalik/receiver:latest
+imageDigest: sha256:7c2bc9d658270b7e7de5487de23a27f08f6d45f8635906554268eea2ab66a1b7
 trigger: events
 builder: default
 builderMap:
-  default: quay.io/boson/faas-nodejs-builder
+  default: quay.io/boson/faas-go-builder
 envVars: {}
