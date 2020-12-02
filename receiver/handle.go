@@ -113,7 +113,15 @@ func getPhotoURL(fileId string) (string, error) {
 	data, _ := ioutil.ReadAll(res.Body)
 	result := GetUrlResult{}
 	json.Unmarshal(data, &result)
-	filepath := result.Result["file_path"].(string)
+
+	var filepath string
+	if path, found := result.Result["file_path"]; found {
+		filepath = path.(string)
+	} else {
+		err :=  fmt.Errorf("failed to get file_path from Telegram message, data: %v\n", result)
+		fmt.Fprintf(os.Stderr, err.Error())
+		return "", err
+	}
 
 	return filepath, nil
 }
