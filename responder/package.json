@@ -9,8 +9,8 @@
   },
   "scripts": {
     "test": "node test/unit.js && node test/integration.js",
-    "local": "npx faas-js-runtime ./index.js",
-    "debug": "nodemon --inspect ./node_modules/faas-js-runtime/bin/cli.js ./index.js"
+    "local": "TELEGRAM_API_KEY=<API KEY> npx faas-js-runtime ./index.js",
+    "debug": "TELEGRAM_API_KEY=<API KEY> nodemon --inspect ./node_modules/faas-js-runtime/bin/cli.js ./index.js"
   },
   "devDependencies": {
     "faas-js-runtime": "0.5.1",
