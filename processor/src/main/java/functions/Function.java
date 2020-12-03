@@ -1,12 +1,6 @@
 package functions;
 
 
-import java.net.ConnectException;
-import java.net.UnknownHostException;
-import java.util.List;
-
-import java.util.*;
-
 import com.microsoft.azure.cognitiveservices.vision.faceapi.FaceAPI;
 import com.microsoft.azure.cognitiveservices.vision.faceapi.FaceAPIManager;
 import com.microsoft.azure.cognitiveservices.vision.faceapi.models.AzureRegions;
@@ -17,12 +11,16 @@ import io.quarkus.funqy.knative.events.CloudEvent;
 import io.smallrye.mutiny.Uni;
 import io.smallrye.mutiny.subscription.UniEmitter;
 import io.vertx.core.Vertx;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import javax.inject.Inject;
+import java.net.ConnectException;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class Function {
-
-    private static final String API_KEY = "dcc086604d47489e86bd6d216aa5b09b";
 
     @Inject
     Vertx vertx;
@@ -35,7 +33,8 @@ public class Function {
         attributes = Collections.unmodifiableList(attrs);
     }
 
-
+    @ConfigProperty(name = "OCP_APIM_SUBSCRIPTION_KEY")
+    String apiKey;
 
     @Funq
     public Uni<Output[]> function(Input input, @Context CloudEvent cloudEvent) {
@@ -49,7 +48,7 @@ public class Function {
         if (retries <= 0) {
             emitter.fail(new RuntimeException("Too many fails to call face api."));
         }
-        FaceAPI faceAPI = FaceAPIManager.authenticate("https://boson.cognitiveservices.azure.com/face/v1.0", API_KEY);
+        FaceAPI faceAPI = FaceAPIManager.authenticate("https://boson.cognitiveservices.azure.com/face/v1.0", apiKey);
         faceAPI
                 .withAzureRegion(AzureRegions.EASTUS) // not really used but has to be set anyway :(
                 .faces()
