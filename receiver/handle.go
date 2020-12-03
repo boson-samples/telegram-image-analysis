@@ -12,8 +12,8 @@ import (
 	cloudevents "github.com/cloudevents/sdk-go/v2"
 )
 
-const (
-	token                = "1407047081:AAHmJBglqwF8NsltEn3PKddEeiPT-v74kIM"
+var (
+	token                = os.Getenv("TELEGRAM_API_KEY")
 	getFileInfoUrl       = "https://api.telegram.org/bot" + token + "/getFile"
 	donwloadPhotoBaseUrl = "https://api.telegram.org/file/bot" + token + "/"
 )
@@ -35,6 +35,12 @@ type GetUrlResult struct {
 
 // Handle a CloudEvent.
 func Handle(ctx context.Context, event cloudevents.Event) (resp *cloudevents.Event, err error) {
+	if token == "" {
+		// With no API token we can't do anything
+		fmt.Fprint(os.Stderr, "no TELEGRAM_API_KEY found\n")
+		return
+	}
+
 	if err = event.Validate(); err != nil {
 		fmt.Fprintf(os.Stderr, "invalid event received. %v", err)
 		return
@@ -118,7 +124,7 @@ func getPhotoURL(fileId string) (string, error) {
 	if path, found := result.Result["file_path"]; found {
 		filepath = path.(string)
 	} else {
-		err :=  fmt.Errorf("failed to get file_path from Telegram message, data: %v\n", result)
+		err := fmt.Errorf("failed to get file_path from Telegram message, data: %v\n", result)
 		fmt.Fprintf(os.Stderr, err.Error())
 		return "", err
 	}
