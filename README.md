@@ -26,6 +26,7 @@ You will also need the following API keys and accounts
   * `deploy/kamelet-broker.yaml`
   * `receiver/func.yaml`
   * `responder/func.yaml`
+  * `responder/package.json`
 
 * Set the Microsoft Faces API Key in the following files
   * `processor/func.yaml`
