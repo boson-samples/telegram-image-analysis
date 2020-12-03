@@ -1,6 +1,6 @@
 package functions;
 
-import com.microsoft.azure.cognitiveservices.vision.faceapi.models.Emotion;
+import functions.face.rest.model.Emotion;
 
 public class Output {
     private String chat;

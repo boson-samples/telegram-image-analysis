@@ -44,18 +44,20 @@
       <artifactId>rest-assured</artifactId>
       <scope>test</scope>
     </dependency>
+
     <dependency>
-      <groupId>com.microsoft.azure</groupId>
-      <artifactId>azure-client-runtime</artifactId>
-      <version>1.7.3</version> <!-- {x-version-update;com.microsoft.azure:azure-client-runtime;external_dependency} -->
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-rest-client</artifactId>
     </dependency>
     <dependency>
-      <groupId>com.microsoft.azure.cognitiveservices</groupId>
-      <artifactId>azure-cognitiveservices-faceapi</artifactId>
-      <version>1.1.0-beta.1</version>
-      <scope>system</scope>
-      <systemPath>${project.basedir}/libs/azure-cognitiveservices-faceapi-1.1.0-beta.1.jar</systemPath>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-resteasy-jackson</artifactId>
     </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-resteasy-mutiny</artifactId>
+    </dependency>
+
   </dependencies>
   <build>
     <plugins>
