@@ -8,6 +8,7 @@ import com.microsoft.azure.cognitiveservices.vision.faceapi.models.FaceAttribute
 import io.quarkus.funqy.Context;
 import io.quarkus.funqy.Funq;
 import io.quarkus.funqy.knative.events.CloudEvent;
+import io.quarkus.funqy.knative.events.CloudEventMapping;
 import io.smallrye.mutiny.Uni;
 import io.smallrye.mutiny.subscription.UniEmitter;
 import io.vertx.core.Vertx;
@@ -37,6 +38,7 @@ public class Function {
     String apiKey;
 
     @Funq
+    @CloudEventMapping(responseType = "telegram.photo.processed")
     public Uni<Output[]> function(Input input, @Context CloudEvent cloudEvent) {
         return Uni.createFrom().emitter(emitter -> {
             getData(input, cloudEvent, emitter, 100);
