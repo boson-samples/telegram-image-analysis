@@ -3,6 +3,7 @@ package function
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -37,8 +38,7 @@ type GetUrlResult struct {
 func Handle(ctx context.Context, event cloudevents.Event) (resp *cloudevents.Event, err error) {
 	if token == "" {
 		// With no API token we can't do anything
-		fmt.Fprint(os.Stderr, "no TELEGRAM_API_KEY found\n")
-		return
+		return nil, errors.New("TELEGRAM_API_KEY environment variable not set")
 	}
 
 	if err = event.Validate(); err != nil {
