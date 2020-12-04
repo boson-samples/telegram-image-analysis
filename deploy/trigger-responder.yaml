@@ -6,8 +6,11 @@ metadata:
 spec:
   broker: default
   filter:
-    attributes:
-      type: telegram.photo.processed
+    and:
+    - attributes:
+        type: telegram:image:processed
+    - attributes:
+      type: telegram:text
   subscriber:
     ref:
      apiVersion: serving.knative.dev/v1

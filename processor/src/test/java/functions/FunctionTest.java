@@ -29,7 +29,7 @@ public class FunctionTest {
                 .header("ce-id", notNullValue())
                 .header("ce-specversion", equalTo("1.0"))
                 .header("ce-source", equalTo("function"))
-                .header("ce-type", equalTo("telegram.photo.processed"))
+                .header("ce-type", equalTo("telegram:image:processed"))
                 .body("message", equalTo("Hello!"));
     }
 
