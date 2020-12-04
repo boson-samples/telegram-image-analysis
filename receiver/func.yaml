@@ -7,4 +7,5 @@ trigger: events
 builder: default
 builderMap:
   default: quay.io/boson/faas-go-builder
-envVars: {}
+envVars:
+  TELEGRAM_API_KEY: <TELEGRAM API KEY>

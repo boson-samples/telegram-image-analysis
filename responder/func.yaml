@@ -4,7 +4,8 @@ runtime: node
 image: ""
 imageDigest: ""
 trigger: events
-builder: quay.io/boson/faas-nodejs-builder
+builder: default
 builderMap:
   default: quay.io/boson/faas-nodejs-builder
-envVars: {}
+envVars:
+  TELEGRAM_API_KEY: <TELEGRAM API KEY>

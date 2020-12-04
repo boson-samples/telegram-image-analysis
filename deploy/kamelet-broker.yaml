@@ -5,7 +5,7 @@ metadata:
 spec:
   source:
     properties:
-      authorizationToken: "1407047081:AAHmJBglqwF8NsltEn3PKddEeiPT-v74kIM"
+      authorizationToken: "<TELEGRAM BOT API TOKEN>"
     ref:
       apiVersion: camel.apache.org/v1alpha1
       kind: Kamelet

@@ -14,7 +14,22 @@ cool stuff with deep learning.
     `make images install`
 * Red Hat Integration - Camel K Operator 1.2.0
 
+You will also need the following API keys and accounts
 
+* [Microsoft Faces API Key](https://azure.microsoft.com/en-us/services/cognitive-services/face/)
+* [Telegram Bot API KEY](https://core.telegram.org/bots)
+* An image registry account such as docker.io or quay.io
+
+### Set the API keys for Telegram and MS Faces API
+
+* Set the Telegram API Key in the following files
+  * `deploy/kamelet-broker.yaml`
+  * `receiver/func.yaml`
+  * `responder/func.yaml`
+  * `responder/package.json`
+
+* Set the Microsoft Faces API Key in the following files
+  * `processor/func.yaml`
 
 ### Create the default broker
 

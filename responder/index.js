@@ -2,8 +2,13 @@
 const { CloudEvent, HTTP } = require('cloudevents');
 const axios = require('axios');
 
-const token = process.env.API_TOKEN || "1407047081:AAHmJBglqwF8NsltEn3PKddEeiPT-v74kIM";
+const token = process.env.TELEGRAM_API_KEY;
 const url = `https://api.telegram.org/bot${token}/sendMessage`;
+
+// Sanity check - we can't do anything without an API token
+if (!token) {
+  throw new Error('No $TELEGRAM_API_KEY found.');
+}
 
 // Should receive a cloud event with a Telegram chat ID
 // Make this function async so we can return immediately
