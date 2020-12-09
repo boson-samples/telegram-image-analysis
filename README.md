@@ -1,7 +1,6 @@
-# Deep Learning with OpenShift Serverless Functions
+# Telegram Image Anaylysis with OpenShift Serverless Functions
 
-In this demo, you will learn how Serverless Functions can be used to do some
-cool stuff with deep learning. 
+In this demo, you will learn how Serverless Functions can be used to do facial recognition in the Telegram chat. 
 
 
 ## Setup
