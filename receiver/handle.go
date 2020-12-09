@@ -22,11 +22,13 @@ var (
 type Message struct {
 	Chat   map[string]interface{}   `json:"chat"`
 	Photos []map[string]interface{} `json:"photo"`
+	Text   string                   `json:"text"`
 }
 
 type Response struct {
 	Chat string `json:"chat"`
-	Url  string `json:"url"`
+	URL  string `json:"url"`
+	Text string `json:"text"`
 }
 
 type GetUrlResult struct {
@@ -53,43 +55,59 @@ func Handle(ctx context.Context, event cloudevents.Event) (resp *cloudevents.Eve
 		return
 	}
 
-	if len(msg.Photos) == 0 {
-		//doesn't contain a photo -> do nothing
-		fmt.Println("received Telegram message without a photo.")
-		return
-	}
-
-	fmt.Println("received Telegram message with a photo.")
-
 	// Get chat ID from Telegram message
-	var chatId string
+	var chatID string
 	if id, found := msg.Chat["id"]; found {
-		chatId = id.(string)
+		chatID = id.(string)
 	} else {
 		fmt.Fprintf(os.Stderr, "failed to get chat_id from Telegram message\n")
 		return
 	}
 
+	if len(msg.Photos) == 0 {
+		//doesn't contain a photo -> emit telegram.text event
+		fmt.Println("received Telegram message without a photo.")
+		// send a CloudEvent with photos
+		response := cloudevents.NewEvent()
+		response.SetID(event.ID())
+		response.SetSource("function:receiver")
+		response.SetType("telegram:text")
+		response.SetData(cloudevents.ApplicationJSON, Response{
+			Chat: chatID,
+			Text: msg.Text,
+		})
+
+		resp = &response
+
+		if err = resp.Validate(); err != nil {
+			fmt.Printf("invalid event created. %v", err)
+		}
+
+		return
+	}
+
+	fmt.Println("received Telegram message with a photo.")
+
 	// Get ID of the last photo from Telegram message
-	var fileId string
+	var fileID string
 	if id, found := msg.Photos[len(msg.Photos)-1]["file_id"]; found {
-		fileId = id.(string)
+		fileID = id.(string)
 	} else {
 		fmt.Fprintf(os.Stderr, "failed to get file_id from the last photo from Telegram message\n")
 		return
 	}
 
 	var photoPath string
-	photoPath, err = getPhotoURL(fileId)
+	photoPath, err = getPhotoURL(fileID)
 
 	// send a CloudEvent with photos
 	response := cloudevents.NewEvent()
 	response.SetID(event.ID())
 	response.SetSource("function:receiver")
-	response.SetType("image:received")
+	response.SetType("telegram:image")
 	response.SetData(cloudevents.ApplicationJSON, Response{
-		Chat: chatId,
-		Url:  donwloadPhotoBaseUrl + photoPath,
+		Chat: chatID,
+		URL:  donwloadPhotoBaseUrl + photoPath,
 	})
 
 	resp = &response
@@ -101,12 +119,12 @@ func Handle(ctx context.Context, event cloudevents.Event) (resp *cloudevents.Eve
 	return
 }
 
-func getPhotoURL(fileId string) (string, error) {
+func getPhotoURL(fileID string) (string, error) {
 
 	res, err := http.Post(
 		getFileInfoUrl,
 		"application/json; charset=UTF-8",
-		strings.NewReader(fmt.Sprintf("{\"file_id\":\"%s\"}", fileId)),
+		strings.NewReader(fmt.Sprintf("{\"file_id\":\"%s\"}", fileID)),
 	)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "unable to get a photo URL. %v", err)
@@ -124,7 +142,7 @@ func getPhotoURL(fileId string) (string, error) {
 	if path, found := result.Result["file_path"]; found {
 		filepath = path.(string)
 	} else {
-		err := fmt.Errorf("failed to get file_path from Telegram message, data: %v\n", result)
+		err := fmt.Errorf("failed to get file_path from Telegram message, data: %v", result)
 		fmt.Fprintf(os.Stderr, err.Error())
 		return "", err
 	}

@@ -7,7 +7,7 @@ spec:
   broker: default
   filter:
     attributes:
-      type: image:received
+      type: telegram:image
   subscriber:
     ref:
      apiVersion: serving.knative.dev/v1
