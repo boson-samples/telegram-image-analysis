@@ -71,7 +71,7 @@ func Handle(ctx context.Context, event cloudevents.Event) (resp *cloudevents.Eve
 		response := cloudevents.NewEvent()
 		response.SetID(event.ID())
 		response.SetSource("function:receiver")
-		response.SetType("telegram:text")
+		response.SetType("telegram.text")
 		response.SetData(cloudevents.ApplicationJSON, Response{
 			Chat: chatID,
 			Text: msg.Text,
@@ -104,7 +104,7 @@ func Handle(ctx context.Context, event cloudevents.Event) (resp *cloudevents.Eve
 	response := cloudevents.NewEvent()
 	response.SetID(event.ID())
 	response.SetSource("function:receiver")
-	response.SetType("telegram:image")
+	response.SetType("telegram.image")
 	response.SetData(cloudevents.ApplicationJSON, Response{
 		Chat: chatID,
 		URL:  donwloadPhotoBaseUrl + photoPath,

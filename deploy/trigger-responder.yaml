@@ -8,9 +8,9 @@ spec:
   filter:
     and:
     - attributes:
-        type: telegram:image:processed
+        type: telegram.image.processed
     - attributes:
-      type: telegram:text
+      type: telegram.text
   subscriber:
     ref:
      apiVersion: serving.knative.dev/v1

@@ -30,10 +30,10 @@ async function sendReply(context, data) {
     const eventType = context.cloudevent.type;
 
     let response;
-    if (eventType === 'telegram:image:processed') {
+    if (eventType === 'telegram.image.processed') {
       response = formatResponse(data);
       chatId = data[0].chat;
-    } else if (eventType === 'telegram:text') {
+    } else if (eventType === 'telegram.text') {
       response = `👋 😃
 Send me an image with faces in it and I will analyze it for you.`;
       chatId = data.chat;
