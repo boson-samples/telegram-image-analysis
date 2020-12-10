@@ -38,7 +38,7 @@ public class Function {
     String apiKey;
 
     @Funq
-    @CloudEventMapping(responseType = "telegram:image:processed")
+    @CloudEventMapping(responseType = "telegram.image.processed")
     public Uni<Output[]> function(Input input, @Context CloudEvent cloudEvent) {
         return Uni.createFrom().emitter(emitter -> {
             getData(input, cloudEvent, emitter, 100);
