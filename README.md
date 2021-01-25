@@ -2,6 +2,10 @@
 
 In this demo, you will learn how Serverless Functions can be used to do facial recognition in the Telegram chat. 
 
+Here you can watch a recording of this demo:
+
+[![OpenShift Serverless Functions - Telegram Image Analysis Demo](http://img.youtube.com/vi/CsYo0SmQ0Uk/0.jpg)](http://www.youtube.com/watch?v=CsYo0SmQ0Uk "OpenShift Serverless Functions - Telegram Image Analysis Demo")
+
 
 ## Setup
 
