@@ -2,42 +2,77 @@ package functions;
 
 import com.microsoft.azure.cognitiveservices.vision.faceapi.models.Emotion;
 
+import java.util.Arrays;
+
 public class Output {
+    private Face[] faces;
     private String chat;
-    private Double age;
-    private Emotion emotion;
 
     public Output() {}
 
-
-    public Output(String chat, Double age, Emotion emotion) {
+    public Output(String chat, Face[] faces) {
         this.chat = chat;
-        this.age = age;
-        this.emotion = emotion;
+        this.faces = faces;
+    }
+
+    public Face[] getFaces() {
+        return faces;
+    }
+
+    public void setFaces(Face[] faces) {
+        this.faces = faces;
     }
 
     public String getChat() {
-        return this.chat;
+        return chat;
     }
 
     public void setChat(String chat) {
         this.chat = chat;
     }
 
-
-    public Double getAge() {
-        return this.age;
+    @Override
+    public String toString() {
+        return "Output{" +
+                "faces=" + Arrays.toString(faces) +
+                ", chat='" + chat + '\'' +
+                '}';
     }
 
-    public void setAge(Double age) {
-        this.age = age;
-    }
+    public static class Face {
+        private Double age;
+        private Emotion emotion;
 
-    public Emotion getEmotion() {
-        return this.emotion;
-    }
+        public Face() {
+        }
 
-    public void setEmotion(Emotion emotion) {
-        this.emotion = emotion;
+        public Face(Double age, Emotion emotion) {
+            this.age = age;
+            this.emotion = emotion;
+        }
+
+        public Double getAge() {
+            return age;
+        }
+
+        public void setAge(Double age) {
+            this.age = age;
+        }
+
+        public Emotion getEmotion() {
+            return emotion;
+        }
+
+        public void setEmotion(Emotion emotion) {
+            this.emotion = emotion;
+        }
+
+        @Override
+        public String toString() {
+            return "Face{" +
+                    "age=" + age +
+                    ", emotion=" + emotion +
+                    '}';
+        }
     }
 }
