@@ -2,18 +2,30 @@
 apiVersion: eventing.knative.dev/v1
 kind: Trigger
 metadata:
-  name: trigger-responder
+  name: trigger-responder-image
 spec:
   broker: default
   filter:
-    and:
-    - attributes:
+    attributes:
       type: telegram.image.processed
-    - attributes:
-      type: telegram.text
   subscriber:
     ref:
      apiVersion: serving.knative.dev/v1
      kind: Service
      name: responder
 
+---
+apiVersion: eventing.knative.dev/v1
+kind: Trigger
+metadata:
+  name: trigger-responder-text
+spec:
+  broker: default
+  filter:
+    attributes:
+      type: telegram.text
+  subscriber:
+    ref:
+     apiVersion: serving.knative.dev/v1
+     kind: Service
+     name: responder

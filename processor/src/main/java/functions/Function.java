@@ -50,9 +50,8 @@ public class Function {
         if (retries <= 0) {
             emitter.fail(new RuntimeException("Too many fails to call face api."));
         }
-        FaceAPI faceAPI = FaceAPIManager.authenticate("https://boson.cognitiveservices.azure.com/face/v1.0", apiKey);
+        FaceAPI faceAPI = FaceAPIManager.authenticate(AzureRegions.EASTUS, apiKey);
         faceAPI
-                .withAzureRegion(AzureRegions.EASTUS) // not really used but has to be set anyway :(
                 .faces()
                 .detectWithUrl()
                 .withUrl(input.getUrl())
@@ -66,6 +65,7 @@ public class Function {
                                 .stream()
                                 .map(face -> new Output(input.getChat(), face.faceAttributes().age(), face.faceAttributes().emotion()))
                                 .toArray(Output[]::new);
+                                System.out.println("Number of faces detected in the image: " + out.length);
                         emitter.complete(out);
                     } catch (Exception e) {
                         emitter.fail(e);
