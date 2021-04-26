@@ -9,13 +9,13 @@ Here you can watch a recording of this demo:
 
 ## Setup
 
-* OpenShift 4.6
-* Red Hat OpenShift Serverless Operator 1.11.0
+* OpenShift 4.6 (or newer)
+* Red Hat OpenShift Serverless - installed as an operator from OperatorHub (version >= 1.11.0)
   * To install on a cluster that does not have this available, clone
     [the serverless operator repository](https://github.com/openshift-knative/serverless-operator),
     ensure that you are logged into your OpenShift cluster and run
     `make images install`
-* Red Hat Integration - Camel K Operator 1.2.0
+* Red Hat Integration - Camel K - installed as an operator from OperatorHub (version >= 1.2.0)
 
 You will also need the following API keys and accounts
 

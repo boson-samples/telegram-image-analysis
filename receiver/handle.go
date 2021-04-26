@@ -49,7 +49,6 @@ func Handle(ctx context.Context, event cloudevents.Event) (resp *cloudevents.Eve
 	}
 
 	msg := &Message{}
-	event.DataAs(msg)
 	if err = event.DataAs(msg); err != nil {
 		fmt.Fprintf(os.Stderr, "failed to parse Telegram message %s\n", err)
 		return
