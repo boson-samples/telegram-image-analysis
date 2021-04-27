@@ -10,10 +10,36 @@ if (!token) {
   throw new Error('No $TELEGRAM_API_KEY found.');
 }
 
-// Should receive a cloud event with a Telegram chat ID
-// Make this function async so we can return immediately
-// to the invoker, while doing the work of replying to
-// the original chat message.
+/**
+ * A complex emotion represented as tuple of various emotions
+ * @typedef {{anger:     Number,
+ *            contempt:  Number,
+ *            disgust:   Number,
+ *            fear:      Number,
+ *            happiness: Number,
+ *            neutral:   Number,
+ *            sadness:   Number,
+ *            surprise:  Number}} Emotion
+ */
+
+/**
+ * A face
+ * @typedef {{age:     Number,
+ *            emotion: Emotion}} Face
+ */
+
+/**
+ * Should receive a cloud event with a Telegram chat ID
+ * Make this function async so we can return immediately
+ * to the invoker, while doing the work of replying to
+ * the original chat message.
+ *
+ * @param {{cloudevent: CloudEvent, log: Object}} context
+ * Invocation context. Contains info about incoming HTTP request/CloudEvent.
+ * @param {{faces: Face[], chat: String}} data
+ * Contains telegram chatID and image face analysis.
+ * @returns {Promise<{code: Number?, message: String?}>}
+ */
 async function sendReply(context, data) {
   if (!context.cloudevent) {
     context.log.error('No CloudEvent received');
@@ -31,8 +57,8 @@ async function sendReply(context, data) {
 
     let response;
     if (eventType === 'telegram.image.processed') {
-      response = formatResponse(data);
-      chatId = data[0].chat;
+      response = formatResponse(data.faces);
+      chatId = data.chat;
     } else if (eventType === 'telegram.text') {
       response = `👋 😃
 Send me an image with faces in it and I will analyze it for you.`;
@@ -52,6 +78,11 @@ Send me an image with faces in it and I will analyze it for you.`;
   });
 }
 
+/**
+ *
+ * @param {Face[]} response
+ * @returns {string}
+ */
 function formatResponse(response) {
   let faces = response.length === 1 ? 'face' : 'faces';
   let text = `Hi! Thanks for playing. 😃
