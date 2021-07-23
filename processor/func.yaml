@@ -4,10 +4,14 @@ runtime: quarkus
 image: ""
 imageDigest: ""
 trigger: events
-builder: quay.io/boson/faas-quarkus-jvm-builder
+builder: quay.io/boson/faas-jvm-builder
 builderMap:
-  default: quay.io/boson/faas-quarkus-jvm-builder
-  jvm: quay.io/boson/faas-quarkus-jvm-builder
+  default: quay.io/boson/faas-jvm-builder
+  jvm: quay.io/boson/faas-jvm-builder
   native: quay.io/boson/faas-quarkus-native-builder
-envVars:
-  OCP_APIM_SUBSCRIPTION_KEY: "<YOUR SUBSCRIPTION KEY>"
+volumes: []
+envs:
+- name: OCP_APIM_SUBSCRIPTION_KEY
+  value: '{{ env:OCP_APIM_SUBSCRIPTION_KEY }}'
+annotations: {}
+options: {}
