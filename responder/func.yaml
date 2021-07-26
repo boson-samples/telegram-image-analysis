@@ -7,5 +7,9 @@ trigger: events
 builder: default
 builderMap:
   default: quay.io/boson/faas-nodejs-builder
-envVars:
-  TELEGRAM_API_KEY: <TELEGRAM API KEY>
+volumes: []
+envs:
+- name: TELEGRAM_API_KEY
+  value: '{{ env:TELEGRAM_API_KEY }}'
+annotations: {}
+options: {}

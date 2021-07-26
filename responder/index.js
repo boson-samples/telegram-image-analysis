@@ -36,11 +36,11 @@ if (!token) {
  *
  * @param {{cloudevent: CloudEvent, log: Object}} context
  * Invocation context. Contains info about incoming HTTP request/CloudEvent.
- * @param {{faces: Face[], chat: String}} data
+ * @param {{faces: Face[], chat: String}} event with data
  * Contains telegram chatID and image face analysis.
  * @returns {Promise<{code: Number?, message: String?}>}
  */
-async function sendReply(context, data) {
+async function sendReply(context, event) {
   if (!context.cloudevent) {
     context.log.error('No CloudEvent received');
     return {
@@ -57,12 +57,12 @@ async function sendReply(context, data) {
 
     let response;
     if (eventType === 'telegram.image.processed') {
-      response = formatResponse(data.faces);
-      chatId = data.chat;
+      response = formatResponse(event.data.faces);
+      chatId = event.data.chat;
     } else if (eventType === 'telegram.text') {
       response = `👋 😃
 Send me an image with faces in it and I will analyze it for you.`;
-      chatId = data.chat;
+      chatId = event.data.chat;
     } else {
       // Don't know how to handle any other kind of event
       context.log.error(`Cannot handle events of type: ${eventType}`);
