@@ -3,7 +3,6 @@ namespace: ""
 runtime: quarkus
 image: ""
 imageDigest: ""
-trigger: events
 builder: quay.io/boson/faas-jvm-builder
 builderMap:
   default: quay.io/boson/faas-jvm-builder
@@ -15,3 +14,4 @@ envs:
   value: '{{ env:OCP_APIM_SUBSCRIPTION_KEY }}'
 annotations: {}
 options: {}
+labels: []
